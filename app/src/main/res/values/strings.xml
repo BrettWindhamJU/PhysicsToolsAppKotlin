@@ -1,3 +1,35 @@
 <resources>
     <string name="app_name">ToolsAppKotlin</string>
+    <string name="resume_readings">Resume live readings</string>
+    <string name="pause_readings">Pause live readings</string>
+    <string name="start_recording">Start recording</string>
+    <string name="stop_recording">Stop recording</string>
+    <string name="recording">Recording…</string>
+    <string name="recording_idle">Not recording. Leaving this screen stops recording.</string>
+    <string name="recording_stopped">Recording stopped.</string>
+    <string name="saving_readings">Finishing saved readings…</string>
+    <string name="no_accelerometer">No accelerometer available on this device.</string>
+    <string name="sensor_start_failed">Could not start the accelerometer.</string>
+    <string name="save_failed">Could not save a reading. Recording stopped.</string>
+    <string name="load_failed">Could not load saved readings. Tap View recordings to retry.</string>
+    <string name="view_saved_readings">View recordings</string>
+    <string name="history_heading">Latest 100 readings · newest first · m/s²</string>
+    <string name="history_hint">Tap View recordings to load data from this device.</string>
+    <string name="loading_readings">Loading saved readings…</string>
+    <string name="no_saved_readings">No saved readings yet.</string>
+    <string name="axis_value">%1$s: %2$.2f m/s²</string>
+    <string name="saved_reading_row">%1$s\nX: %2$.4f   Y: %3$.4f   Z: %4$.4f</string>
+    <string name="x_empty">X: — m/s²</string>
+    <string name="y_empty">Y: — m/s²</string>
+    <string name="z_empty">Z: — m/s²</string>
+    <string name="recordings_heading">Recordings · newest first · tap to open</string>
+    <string name="no_recordings">No recordings yet. Tap Start recording to begin.</string>
+    <string name="back_recordings">Back to recordings</string>
+    <string name="previous_page">Previous 100</string>
+    <string name="next_page">Next 100</string>
+    <string name="recording_time_range">%1$s\nto %2$s · %3$.2f seconds</string>
+    <string name="recording_open">%1$s\n%2$s</string>
+    <string name="recording_interrupted">Incomplete — no stop time saved</string>
+    <string name="recording_summary">%1$s\n%2$d readings</string>
+    <string name="recording_detail">Recording: %1$s\nReadings %2$d–%3$d · m/s² · oldest first</string>
 </resources>
