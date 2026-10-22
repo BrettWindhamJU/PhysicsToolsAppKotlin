@@ -1,53 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Accelerometer">
+    android:orientation="vertical"
+    android:padding="16dp">
 
-    <Button
-        android:id="@+id/btnPauseResume"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Pause/Start"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/yValue"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Y: 0.00 "
-        android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnPauseResume" />
-
-    <TextView
-        android:id="@+id/zValue"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="32dp"
-        android:text="Z: 0.00 "
-        android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/yValue"
-        app:layout_constraintTop_toTopOf="@+id/yValue" />
-
-    <TextView
-        android:id="@+id/xValue"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:text="X: 0.00 "
-        android:textSize="24sp"
-        app:layout_constraintEnd_toStartOf="@+id/yValue"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/yValue" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <Button android:id="@+id/btnPauseResume"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:text="@string/resume_readings" />
+    <TextView android:id="@+id/xValue"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:text="@string/x_empty" android:textSize="20sp" />
+    <TextView android:id="@+id/yValue"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:text="@string/y_empty" android:textSize="20sp" />
+    <TextView android:id="@+id/zValue"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:text="@string/z_empty" android:textSize="20sp" />
+    <Button android:id="@+id/btnRecord"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:text="@string/start_recording" />
+    <TextView android:id="@+id/recordingStatus"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:accessibilityLiveRegion="polite" android:text="@string/recording_idle" />
+    <Button android:id="@+id/btnViewData"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:text="@string/view_saved_readings" />
+    <Button android:id="@+id/btnBackRecordings"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:text="@string/back_recordings" android:visibility="gone" />
+    <TextView android:id="@+id/historyHeading"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:text="@string/recordings_heading" android:textStyle="bold" />
+    <ListView android:id="@+id/recordingsList"
+        android:layout_width="match_parent" android:layout_height="0dp"
+        android:layout_weight="1" />
+    <LinearLayout android:id="@+id/pageControls"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="horizontal" android:visibility="gone">
+        <Button android:id="@+id/btnPrevious"
+            android:layout_width="0dp" android:layout_height="wrap_content"
+            android:layout_weight="1" android:text="@string/previous_page" />
+        <Button android:id="@+id/btnNext"
+            android:layout_width="0dp" android:layout_height="wrap_content"
+            android:layout_weight="1" android:text="@string/next_page" />
+    </LinearLayout>
+</LinearLayout>
