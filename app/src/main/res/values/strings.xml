@@ -32,4 +32,18 @@
     <string name="recording_interrupted">Incomplete — no stop time saved</string>
     <string name="recording_summary">%1$s\n%2$d readings</string>
     <string name="recording_detail">Recording: %1$s\nReadings %2$d–%3$d · m/s² · oldest first</string>
+    <string name="analyze_recording">Analyze with Gemini</string>
+    <string name="analysis_title">Recording analysis</string>
+    <string name="analysis_loading">App Check verified. Sending the entire recording to Gemini… Waiting up to 3 minutes for a response.</string>
+    <string name="analysis_preparing">Preparing the entire recording…</string>
+    <string name="analysis_checking">Verifying this device with Firebase App Check…</string>
+    <string name="analysis_stage_readings">loading saved readings</string>
+    <string name="analysis_stage_app_check">Firebase App Check verification</string>
+    <string name="analysis_stage_gemini">the Gemini request</string>
+    <string name="analysis_timeout">Timed out during %1$s. Check your connection and try again. If verification keeps failing, check that this device’s debug token is registered in Firebase.</string>
+    <string name="analysis_failed_stage">Failed during %1$s. Check your connection and Firebase configuration. Details are in Logcat under GeminiAnalysis. Close this window to retry.</string>
+    <string name="analysis_empty">This recording has no readings to analyze.</string>
+    <string name="analysis_no_response">Gemini returned no text. Close this window and try again.</string>
+    <string name="analysis_close">Close</string>
+    <string name="analysis_note">AI-generated explanation; it may contain mistakes. This response is not saved.</string>
 </resources>

@@ -1,5 +1,4 @@
 package com.example.toolsappkotlin
-
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -15,6 +14,7 @@ import com.example.toolsappkotlin.ui.theme.ToolsAppKotlinTheme
 import android.content.Intent
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

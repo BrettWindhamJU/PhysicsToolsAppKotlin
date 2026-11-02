@@ -1,6 +1,9 @@
 package com.example.toolsappkotlin
 
 import android.hardware.Sensor
+import android.app.AlertDialog
+import android.util.Log
+import android.widget.ScrollView
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
@@ -13,6 +16,15 @@ import android.widget.ListView
 import android.widget.TextView
 import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.TimeoutCancellationException
+import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeout
+import kotlinx.coroutines.tasks.await
+import com.google.firebase.appcheck.FirebaseAppCheck
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.toolsappkotlin.data.AccelerometerReading
@@ -38,6 +50,7 @@ class Accelerometer : ComponentActivity(), SensorEventListener {
     private lateinit var previous: Button
     private lateinit var next: Button
     private lateinit var back: Button
+    private lateinit var analyze: Button
     private var selectedRecording: RecordingSummary? = null
     private var pageOffset = 0
     private var historyRequest = 0
@@ -67,6 +80,8 @@ class Accelerometer : ComponentActivity(), SensorEventListener {
         previous = findViewById(R.id.btnPrevious)
         next = findViewById(R.id.btnNext)
         back = findViewById(R.id.btnBackRecordings)
+        analyze = findViewById(R.id.btnAnalyze)
+        analyze.setOnClickListener { selectedRecording?.let { analyzeRecording(it) } }
         pauseButton.setOnClickListener {
             if (isTracking) stopTracking() else startTracking()
         }
@@ -189,6 +204,7 @@ class Accelerometer : ComponentActivity(), SensorEventListener {
 
     private fun showRecordings() {
         selectedRecording = null
+        analyze.visibility = View.GONE
         back.visibility = View.GONE
         findViewById<View>(R.id.pageControls).visibility = View.GONE
         val request = prepareHistory()
@@ -209,6 +225,8 @@ class Accelerometer : ComponentActivity(), SensorEventListener {
 
     private fun showRecording(recording: RecordingSummary, offset: Int) {
         selectedRecording = recording
+        analyze.visibility = View.VISIBLE
+        analyze.isEnabled = recording.id != activeRecording
         pageOffset = offset.coerceAtLeast(0)
         back.visibility = View.VISIBLE
         findViewById<View>(R.id.pageControls).visibility = View.VISIBLE
@@ -232,6 +250,57 @@ class Accelerometer : ComponentActivity(), SensorEventListener {
                 }
             } catch (error: Exception) { historyError(request) }
         }
+    }
+
+    private fun analyzeRecording(recording: RecordingSummary) {
+        val text = TextView(this).apply {
+            setPadding(24, 24, 24, 24)
+            setTextIsSelectable(true)
+            setText(R.string.analysis_preparing)
+        }
+        val scroll = ScrollView(this).apply { addView(text) }
+        val dialog = AlertDialog.Builder(this)
+            .setTitle(R.string.analysis_title)
+            .setView(scroll)
+            .setPositiveButton(R.string.analysis_close, null)
+            .create()
+        dialog.show()
+        val job = lifecycleScope.launch {
+            var stage = getString(R.string.analysis_stage_readings)
+            try {
+                // Use the same worker as recording writes so previously queued saves finish first.
+                val prompt = withContext(databaseWorker.asCoroutineDispatcher()) {
+                    val rows = dao.allRecordingReadings(recording.id)
+                    if (rows.isEmpty()) null else RecordingAnalysis.buildPrompt(rows)
+                }
+                if (prompt == null) {
+                    text.setText(R.string.analysis_empty)
+                } else {
+                    stage = getString(R.string.analysis_stage_app_check)
+                    text.setText(R.string.analysis_checking)
+                    Log.d("GeminiAnalysis", "Verifying App Check")
+                    withTimeout(20_000) {
+                        FirebaseAppCheck.getInstance().getAppCheckToken(false).await()
+                    }
+                    stage = getString(R.string.analysis_stage_gemini)
+                    text.setText(R.string.analysis_loading)
+                    Log.d("GeminiAnalysis", "App Check verified; sending Gemini request")
+                    val response = withTimeout(180_000) { RecordingAnalysis.analyze(prompt) }
+                    Log.d("GeminiAnalysis", "Gemini request completed")
+                    text.text = if (response.isNullOrBlank()) getString(R.string.analysis_no_response)
+                        else response + "\n\n" + getString(R.string.analysis_note)
+                }
+            } catch (error: TimeoutCancellationException) {
+                Log.w("GeminiAnalysis", "Timed out during $stage")
+                text.text = getString(R.string.analysis_timeout, stage)
+            } catch (error: CancellationException) {
+                throw error
+            } catch (error: Exception) {
+                Log.e("GeminiAnalysis", "Recording analysis failed during $stage", error)
+                text.text = getString(R.string.analysis_failed_stage, stage)
+            }
+        }
+        dialog.setOnDismissListener { job.cancel() }
     }
 
     private fun historyError(request: Int) {

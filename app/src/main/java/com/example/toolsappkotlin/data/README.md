@@ -17,6 +17,23 @@ in SQLite through the Room library.
 5. Tap **View recordings** to refresh the list of saved recordings.
 6. Tap a recording to view its readings. Use **Previous 100** and **Next 100** to
    browse longer recordings, or **Back to recordings** to return to the list.
+7. For a stopped recording, tap **Analyze with Gemini**. The app sends every
+   saved reading in that recording to Gemini through Firebase AI Logic, including
+   elapsed milliseconds and the original X/Y/Z values. There is no averaging,
+   sampling, or truncation to the displayed page. An internet connection is required. The response
+   appears in a scrollable window; long-press the text to select and copy it.
+   Responses are not saved and may contain mistakes. Close the window and tap
+   Analyze again to retry a failed request.
+
+## Firebase analysis setup
+
+The app uses the Gemini Developer API through Firebase AI Logic. The Firebase
+project must have AI Logic enabled and a matching `app/google-services.json`.
+Debug builds initialize the App Check debug provider at application startup.
+After the first analysis request, register the token from `DebugAppCheckProvider`
+in Logcat under Firebase App Check's Manage debug tokens, then retry.
+Do not commit the debug token. Release builds need a production App Check provider
+configured before AI requests will work with enforcement enabled.
 
 ## How recording works
 

@@ -30,6 +30,9 @@
     <Button android:id="@+id/btnBackRecordings"
         android:layout_width="match_parent" android:layout_height="wrap_content"
         android:text="@string/back_recordings" android:visibility="gone" />
+    <Button android:id="@+id/btnAnalyze"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:text="@string/analyze_recording" android:visibility="gone" />
     <TextView android:id="@+id/historyHeading"
         android:layout_width="match_parent" android:layout_height="wrap_content"
         android:text="@string/recordings_heading" android:textStyle="bold" />
