@@ -25,6 +25,9 @@ interface AccelerometerDao {
     @Query("SELECT * FROM accelerometer_readings WHERE recordingId IS :recordingId ORDER BY id ASC LIMIT 101 OFFSET :offset")
     fun recordingReadings(recordingId: String, offset: Int): List<AccelerometerReading>
 
+    @Query("SELECT * FROM accelerometer_readings WHERE recordingId = :recordingId ORDER BY id ASC")
+    fun allRecordingReadings(recordingId: String): List<AccelerometerReading>
+
     @Insert
     fun insert(reading: AccelerometerReading)
 
