@@ -65,6 +65,7 @@ class Accelerometer : ComponentActivity(), SensorEventListener {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_accelerometer)
+        findViewById<Button>(R.id.btnBackToSelector).setOnClickListener { finish() }
         val padding = (16 * resources.displayMetrics.density).toInt()
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { view, insets ->
             val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -283,13 +284,21 @@ class Accelerometer : ComponentActivity(), SensorEventListener {
             .setPositiveButton(R.string.analysis_close, null)
             .create()
         dialog.show()
+        // Keep the action visible with the app theme, including while loading.
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).apply {
+            setTextColor(getColor(R.color.white))
+            backgroundTintList = null
+            setBackgroundResource(R.drawable.analysis_close_background)
+            setText(R.string.analysis_close)
+            minHeight = (48 * resources.displayMetrics.density).toInt()
+        }
         val job = lifecycleScope.launch {
             var stage = getString(R.string.analysis_stage_readings)
             try {
                 // Use the same worker as recording writes so previously queued saves finish first.
                 val prompt = withContext(databaseWorker.asCoroutineDispatcher()) {
                     val rows = dao.allRecordingReadings(recording.id)
-                    //if (rows.isEmpty()) null else RecordingAnalysis.buildPrompt(rows)
+                    if (rows.isEmpty()) null else RecordingAnalysis.buildPrompt(rows)
                 }
                 if (prompt == null) {
                     text.setText(R.string.analysis_empty)
@@ -303,10 +312,10 @@ class Accelerometer : ComponentActivity(), SensorEventListener {
                     stage = getString(R.string.analysis_stage_gemini)
                     text.setText(R.string.analysis_loading)
                     Log.d("GeminiAnalysis", "App Check verified; sending Gemini request")
-                    //val response = withTimeout(180_000) { RecordingAnalysis.analyze(prompt) }
+                    val response = withTimeout(180_000) { RecordingAnalysis.analyze(prompt) }
                     Log.d("GeminiAnalysis", "Gemini request completed")
-                    //text.text = if (response.isNullOrBlank()) getString(R.string.analysis_no_response)
-                        //else response + "\n\n" + getString(R.string.analysis_note)
+                    text.text = if (response.isNullOrBlank()) getString(R.string.analysis_no_response)
+                        else response + "\n\n" + getString(R.string.analysis_note)
                 }
             } catch (error: TimeoutCancellationException) {
                 Log.w("GeminiAnalysis", "Timed out during $stage")
@@ -327,3 +336,5 @@ class Accelerometer : ComponentActivity(), SensorEventListener {
         }
     }
 }
+
+

@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:background="#F5F6FA">
+    android:background="@color/ju_background">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -21,7 +21,7 @@
             android:text="Welcome!"
             android:textSize="32sp"
             android:textStyle="bold"
-            android:textColor="#202124"
+            android:textColor="@color/ju_text"
             android:layout_marginBottom="8dp"/>
 
         <TextView
@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:text="Please log in to continue"
             android:textSize="16sp"
-            android:textColor="#666666"
+            android:textColor="@color/ju_secondary_text"
             android:layout_marginBottom="30dp"/>
 
         <!-- Account Type -->
@@ -40,7 +40,7 @@
             android:text="Select Account Type"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:textColor="#202124"
+            android:textColor="@color/ju_text"
             android:layout_marginBottom="12dp"/>
 
         <RadioGroup
@@ -80,7 +80,7 @@
             android:inputType="text"
             android:singleLine="true"
             android:padding="12dp"
-            android:backgroundTint="#4A6CF7"
+            android:backgroundTint="@color/ju_green"
             android:layout_marginBottom="15dp"/>
 
         <!-- Password -->
@@ -93,7 +93,7 @@
             android:inputType="textPassword"
             android:singleLine="true"
             android:padding="12dp"
-            android:backgroundTint="#4A6CF7"
+            android:backgroundTint="@color/ju_green"
             android:layout_marginBottom="25dp"/>
 
         <!-- Login Button -->
@@ -104,8 +104,8 @@
             android:layout_height="55dp"
             android:text="Log In"
             android:textSize="18sp"
-            android:textColor="#FFFFFF"
-            android:backgroundTint="#4A6CF7"/>
+            android:textColor="@color/white"
+            android:backgroundTint="@color/ju_green"/>
 
         <!-- Error Message -->
 
@@ -119,6 +119,11 @@
             android:gravity="center"
             android:layout_marginTop="15dp"/>
 
+        <Button android:id="@+id/btnCreateAccount"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="@string/create_account" />
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="@string/account_hint" />
         <!-- Successful Login Message -->
 
         <TextView
@@ -126,7 +131,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text=""
-            android:textColor="#202124"
+            android:textColor="@color/ju_text"
             android:textSize="22sp"
             android:textStyle="bold"
             android:gravity="center"
@@ -147,3 +152,5 @@
     </LinearLayout>
 
 </ScrollView>
+
+

@@ -44,8 +44,21 @@
     <string name="analysis_failed_stage">Failed during %1$s. Check your connection and Firebase configuration. Details are in Logcat under GeminiAnalysis. Close this window to retry.</string>
     <string name="analysis_empty">This recording has no readings to analyze.</string>
     <string name="analysis_no_response">Gemini returned no text. Close this window and try again.</string>
-    <string name="analysis_close">Close</string>
+    <string name="analysis_close">Close analysis</string>
+    <string name="back_to_selector">Back to sensor selection</string>
     <string name="analysis_note">AI-generated explanation; it may contain mistakes. This response is not saved.</string>
     <string name="start_sensors_recording">Start Sensors &amp; Recording</string>
     <string name="stop_sensors_recording">Stop Sensors &amp; Recording</string>
+    <string name="no_magnetometer">No magnetometer available on this device.</string>
+    <string name="magnetic_axis_value">%1$s: %2$.2f µT</string>
+    <string name="magnetic_recording_detail">Magnetometer recording: %1$s\nReadings %2$d–%3$d · µT · oldest first</string>
+    <string name="create_account">Create account</string>
+    <string name="account_hint">Accounts are saved on this device. Select Student or Teacher when creating an account; login uses the saved role.</string>
+    <string name="account_validation">Enter a username (1–64 characters) and password (up to 128 characters). New accounts require at least 8 characters, a special character (such as !, @, or #; spaces do not count), and a selected role.</string>
+    <string name="account_working">Checking account…</string>
+    <string name="account_exists">That username already exists on this device.</string>
+    <string name="account_invalid">Incorrect username or password.</string>
+    <string name="account_failed">Could not access the account. Please try again.</string>
 </resources>
+
+

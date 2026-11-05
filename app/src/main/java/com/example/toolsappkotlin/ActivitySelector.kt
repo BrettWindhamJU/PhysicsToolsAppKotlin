@@ -33,20 +33,20 @@ class ActivitySelector : ComponentActivity() {
             startActivity(intent)
         }
 
-        AccelerometerWithoutGravityButton.setOnClickListener {
+        /*AccelerometerWithoutGravityButton.setOnClickListener {
             val intent = Intent(this, AccelerometerWithoutGravity::class.java)
             startActivity(intent)
-        }
+        }*/
 
         MagnetometerButton.setOnClickListener {
             val intent = Intent(this, Magnetometer::class.java)
             startActivity(intent)
         }
 
-        PressureSensorButton.setOnClickListener {
+        /*PressureSensorButton.setOnClickListener {
             val intent = Intent(this, PressureSensor::class.java)
             startActivity(intent)
-        }
+        }*/
 
     }
 }

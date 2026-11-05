@@ -2,10 +2,10 @@ package com.example.toolsappkotlin.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
-val Pink80 = Color(0xFFEFB8C8)
+val Purple80 = Color(0xFF98D5BE)
+val PurpleGrey80 = Color(0xFFC5B783)
+val Pink80 = Color(0xFFB8CDC3)
 
-val Purple40 = Color(0xFF6650a4)
-val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)
+val Purple40 = Color(0xFF004E42)
+val PurpleGrey40 = Color(0xFF877126)
+val Pink40 = Color(0xFF52645C)

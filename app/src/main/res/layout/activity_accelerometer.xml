@@ -6,6 +6,10 @@
     android:orientation="vertical"
     android:padding="16dp">
 
+    <Button android:id="@+id/btnBackToSelector"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:text="@string/back_to_selector" />
+
     <Button
         android:id="@+id/btnSensorRecord"
         android:layout_width="match_parent"
@@ -29,7 +33,7 @@
     <Button android:id="@+id/btnBackRecordings"
         android:layout_width="match_parent" android:layout_height="wrap_content"
         android:text="@string/back_recordings" android:visibility="gone" />
-    <Button android:id="@+id/btnAnalyze"
+    <Button android:id="@+id/btnAnalyze" android:backgroundTint="@color/ju_gold" android:textColor="@color/ju_text"
         android:layout_width="match_parent" android:layout_height="wrap_content"
         android:text="@string/analyze_recording" android:visibility="gone" />
     <TextView android:id="@+id/historyHeading"
@@ -55,3 +59,4 @@
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp" />
 </LinearLayout>
+

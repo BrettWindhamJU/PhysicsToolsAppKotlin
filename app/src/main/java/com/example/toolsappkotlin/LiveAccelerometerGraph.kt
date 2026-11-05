@@ -40,32 +40,32 @@ class LiveAccelerometerGraph @JvmOverloads constructor(
     private val bottomPadding = 55f
 
     private val gridPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.LTGRAY
+        color = context.getColor(R.color.ju_disabled)
         strokeWidth = 1.5f
         style = Paint.Style.STROKE
     }
 
     private val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.DKGRAY
+        color = context.getColor(R.color.ju_secondary_text)
         textSize = 28f
     }
 
     private val xPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.RED
+        color = context.getColor(R.color.ju_green)
         strokeWidth = 4f
         style = Paint.Style.STROKE
         strokeCap = Paint.Cap.ROUND
     }
 
     private val yPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.rgb(0, 150, 0)
+        color = context.getColor(R.color.ju_graph_gold)
         strokeWidth = 4f
         style = Paint.Style.STROKE
         strokeCap = Paint.Cap.ROUND
     }
 
     private val zPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.BLUE
+        color = context.getColor(R.color.ju_text)
         strokeWidth = 4f
         style = Paint.Style.STROKE
         strokeCap = Paint.Cap.ROUND
@@ -258,3 +258,4 @@ class LiveAccelerometerGraph @JvmOverloads constructor(
         }
     }
 }
+

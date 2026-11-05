@@ -7,4 +7,11 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="ju_green">#004E42</color>
+    <color name="ju_gold">#C5B783</color>
+    <color name="ju_background">#F4F6F2</color>
+    <color name="ju_text">#192D27</color>
+    <color name="ju_secondary_text">#52645C</color>
+    <color name="ju_disabled">#D9E1DB</color>
+    <color name="ju_graph_gold">#877126</color>
 </resources>
