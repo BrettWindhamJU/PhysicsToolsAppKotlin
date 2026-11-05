@@ -8,6 +8,8 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.util.AttributeSet
 import android.view.View
+import kotlin.math.abs
+import kotlin.math.ceil
 
 class LiveAccelerometerGraph @JvmOverloads constructor(
     context: Context,
@@ -25,8 +27,12 @@ class LiveAccelerometerGraph @JvmOverloads constructor(
 
     private val timeWindow = 10_000_000_000L // 10 seconds
 
-    private val minValue = -20f
-    private val maxValue = 20f
+    // Dynamic Y-axis scale
+    private var minValue = -20f
+    private var maxValue = 20f
+
+    private val defaultScale = 20f
+    private val scalePadding = 1.2f
 
     private val leftPadding = 75f
     private val rightPadding = 25f
@@ -67,6 +73,7 @@ class LiveAccelerometerGraph @JvmOverloads constructor(
 
     @Synchronized
     fun addReading(timestamp: Long, x: Float, y: Float, z: Float) {
+
         readings.add(Reading(timestamp, x, y, z))
 
         val cutoff = timestamp - timeWindow
@@ -75,13 +82,43 @@ class LiveAccelerometerGraph @JvmOverloads constructor(
             it.timestamp < cutoff
         }
 
+        updateAxisScale()
+
         postInvalidate()
     }
 
     @Synchronized
     fun clearGraph() {
         readings.clear()
+
+        minValue = -defaultScale
+        maxValue = defaultScale
+
         postInvalidate()
+    }
+
+    // Automatically adjust the Y-axis scale
+    private fun updateAxisScale() {
+
+        val highestValue = readings.maxOfOrNull {
+            maxOf(
+                abs(it.x),
+                abs(it.y),
+                abs(it.z)
+            )
+        } ?: defaultScale
+
+        // Add 20% extra space above the highest reading
+        val requiredScale = highestValue * scalePadding
+
+        // Round up to the next multiple of 10
+        val newScale = maxOf(
+            defaultScale,
+            ceil(requiredScale / 10f).toInt() * 10f
+        )
+
+        maxValue = newScale
+        minValue = -newScale
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -100,13 +137,20 @@ class LiveAccelerometerGraph @JvmOverloads constructor(
         // Background
         canvas.drawColor(Color.WHITE)
 
-        // Horizontal grid lines and Y-axis labels
+        // Horizontal grid lines and dynamic Y-axis labels
         for (i in 0..4) {
-            val value = maxValue - i * 10f
+
+            val value = maxValue -
+                    i * (maxValue - minValue) / 4f
+
             val y = graphTop + i * graphHeight / 4f
 
             canvas.drawLine(
-                graphLeft, y, graphRight, y, gridPaint
+                graphLeft,
+                y,
+                graphRight,
+                y,
+                gridPaint
             )
 
             canvas.drawText(
@@ -119,10 +163,15 @@ class LiveAccelerometerGraph @JvmOverloads constructor(
 
         // Vertical grid lines
         for (i in 0..5) {
+
             val x = graphLeft + i * graphWidth / 5f
 
             canvas.drawLine(
-                x, graphTop, x, graphBottom, gridPaint
+                x,
+                graphTop,
+                x,
+                graphBottom,
+                gridPaint
             )
 
             canvas.drawText(
@@ -141,17 +190,19 @@ class LiveAccelerometerGraph @JvmOverloads constructor(
             textPaint
         )
 
-        // Draw the three sensor axes
         synchronized(this) {
+
             if (readings.size < 2) return
 
             val latestTimestamp = readings.last().timestamp
             val earliestTimestamp = latestTimestamp - timeWindow
 
+            // Draw each sensor axis
             fun drawAxis(
                 selector: (Reading) -> Float,
                 paint: Paint
             ) {
+
                 val path = Path()
 
                 readings.forEachIndexed { index, reading ->
@@ -160,9 +211,8 @@ class LiveAccelerometerGraph @JvmOverloads constructor(
                             ((reading.timestamp - earliestTimestamp).toFloat() /
                                     timeWindow) * graphWidth
 
-                    val value = selector(reading).coerceIn(
-                        minValue, maxValue
-                    )
+                    // Use dynamic scale without clipping
+                    val value = selector(reading)
 
                     val y = graphBottom -
                             ((value - minValue) /
