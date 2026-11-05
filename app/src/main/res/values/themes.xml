@@ -1,5 +1,19 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <style name="Theme.ToolsAppKotlin" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.ToolsAppKotlin" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:colorAccent">@color/ju_green</item>
+        <item name="android:colorPrimary">@color/ju_green</item>
+        <item name="android:colorPrimaryDark">@color/ju_green</item>
+        <item name="android:windowBackground">@color/ju_background</item>
+        <item name="android:colorBackground">@color/ju_background</item>
+        <item name="android:textColorPrimary">@color/ju_text</item>
+        <item name="android:textColorSecondary">@color/ju_secondary_text</item>
+        <item name="android:buttonStyle">@style/JuButton</item>
+        <item name="android:statusBarColor">@color/ju_background</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:navigationBarColor">@color/ju_green</item>
+    </style>
+    <style name="JuButton" parent="android:Widget.Material.Button">
+        <item name="android:backgroundTint">@color/ju_button</item>
+        <item name="android:textColor">@color/ju_button_text</item>
+    </style>
 </resources>

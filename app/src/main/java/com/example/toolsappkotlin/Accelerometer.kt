@@ -42,8 +42,7 @@ class Accelerometer : ComponentActivity(), SensorEventListener {
     private var accelerometer: Sensor? = null
     private var isTracking = false
     private var activeRecording: String? = null
-    private lateinit var pauseButton: Button
-    private lateinit var recordButton: Button
+    private lateinit var sensorRecordButton: Button
     private lateinit var status: TextView
     private lateinit var heading: TextView
     private lateinit var history: ListView
@@ -55,6 +54,8 @@ class Accelerometer : ComponentActivity(), SensorEventListener {
     private var pageOffset = 0
     private var historyRequest = 0
 
+    private lateinit var accelerometerGraph: LiveAccelerometerGraph
+
     // Serial execution ensures session creation, readings, finalization and queries stay in order.
     // shutdown() drains accepted writes when the Activity is destroyed.
     private val databaseWorker = Executors.newSingleThreadExecutor()
@@ -64,6 +65,7 @@ class Accelerometer : ComponentActivity(), SensorEventListener {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_accelerometer)
+        findViewById<Button>(R.id.btnBackToSelector).setOnClickListener { finish() }
         val padding = (16 * resources.displayMetrics.density).toInt()
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { view, insets ->
             val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -72,8 +74,7 @@ class Accelerometer : ComponentActivity(), SensorEventListener {
         }
         sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
-        pauseButton = findViewById(R.id.btnPauseResume)
-        recordButton = findViewById(R.id.btnRecord)
+        sensorRecordButton = findViewById(R.id.btnSensorRecord)
         status = findViewById(R.id.recordingStatus)
         heading = findViewById(R.id.historyHeading)
         history = findViewById(R.id.recordingsList)
@@ -82,20 +83,25 @@ class Accelerometer : ComponentActivity(), SensorEventListener {
         back = findViewById(R.id.btnBackRecordings)
         analyze = findViewById(R.id.btnAnalyze)
         analyze.setOnClickListener { selectedRecording?.let { analyzeRecording(it) } }
-        pauseButton.setOnClickListener {
-            if (isTracking) stopTracking() else startTracking()
+
+        accelerometerGraph = findViewById(R.id.accelerometerGraph)
+
+        sensorRecordButton.setOnClickListener {
+            if (isTracking) {
+                stopTracking()
+            } else {
+                if (startTracking()) {
+                    startRecording()
+                }
+            }
         }
-        recordButton.setOnClickListener {
-            if (activeRecording != null) stopRecording()
-            else if (isTracking || startTracking()) startRecording()
-        }
+
         findViewById<Button>(R.id.btnViewData).setOnClickListener { showRecordings() }
         back.setOnClickListener { showRecordings() }
         previous.setOnClickListener { selectedRecording?.let { showRecording(it, pageOffset - 100) } }
         next.setOnClickListener { selectedRecording?.let { showRecording(it, pageOffset + 100) } }
         if (accelerometer == null) {
-            pauseButton.isEnabled = false
-            recordButton.isEnabled = false
+            sensorRecordButton.isEnabled = false
             status.setText(R.string.no_accelerometer)
         }
         showRecordings()
@@ -104,15 +110,21 @@ class Accelerometer : ComponentActivity(), SensorEventListener {
     private fun startTracking(): Boolean {
         val sensor = accelerometer ?: return false
         isTracking = sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL)
-        if (isTracking) pauseButton.setText(R.string.pause_readings)
-        else status.setText(R.string.sensor_start_failed)
+
+        if (isTracking) {
+            sensorRecordButton.setText(R.string.stop_sensors_recording)
+            status.setText(R.string.recording)
+        } else {
+            status.setText(R.string.sensor_start_failed)
+        }
+
         return isTracking
     }
 
     private fun startRecording() {
+        accelerometerGraph.clearGraph()
         val recording = AccelerometerRecording(UUID.randomUUID().toString(), System.currentTimeMillis())
         activeRecording = recording.id
-        recordButton.setText(R.string.stop_recording)
         status.setText(R.string.recording)
         save(recording.id) { dao.insertRecording(recording) }
     }
@@ -121,7 +133,6 @@ class Accelerometer : ComponentActivity(), SensorEventListener {
         val id = activeRecording ?: return
         val endedAt = System.currentTimeMillis()
         activeRecording = null
-        recordButton.setText(R.string.start_recording)
         status.setText(R.string.recording_stopped)
         save(id) { dao.finishRecording(id, endedAt) }
         showRecordings()
@@ -146,7 +157,7 @@ class Accelerometer : ComponentActivity(), SensorEventListener {
         stopRecording()
         sensorManager.unregisterListener(this)
         isTracking = false
-        pauseButton.setText(R.string.resume_readings)
+        sensorRecordButton.setText(R.string.start_sensors_recording)
     }
 
     override fun onPause() {
@@ -166,6 +177,14 @@ class Accelerometer : ComponentActivity(), SensorEventListener {
         val x = event.values[0]
         val y = event.values[1]
         val z = event.values[2]
+        // Update live accelerometer graph
+        accelerometerGraph.addReading(
+            event.timestamp,
+            x,
+            y,
+            z
+        )
+
         findViewById<TextView>(R.id.xValue).text = getString(R.string.axis_value, "X", x)
         findViewById<TextView>(R.id.yValue).text = getString(R.string.axis_value, "Y", y)
         findViewById<TextView>(R.id.zValue).text = getString(R.string.axis_value, "Z", z)
@@ -265,6 +284,14 @@ class Accelerometer : ComponentActivity(), SensorEventListener {
             .setPositiveButton(R.string.analysis_close, null)
             .create()
         dialog.show()
+        // Keep the action visible with the app theme, including while loading.
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).apply {
+            setTextColor(getColor(R.color.white))
+            backgroundTintList = null
+            setBackgroundResource(R.drawable.analysis_close_background)
+            setText(R.string.analysis_close)
+            minHeight = (48 * resources.displayMetrics.density).toInt()
+        }
         val job = lifecycleScope.launch {
             var stage = getString(R.string.analysis_stage_readings)
             try {
@@ -309,3 +336,5 @@ class Accelerometer : ComponentActivity(), SensorEventListener {
         }
     }
 }
+
+

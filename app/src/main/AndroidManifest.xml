@@ -27,9 +27,21 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".ActivitySelector"
+            android:exported="false" />
+        <activity
             android:name=".Accelerometer"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
+        <!--<activity
+            android:name=".AccelerometerWithoutGravity"
+            android:exported="false" />-->
+        <activity
+            android:name=".Magnetometer"
+            android:exported="false" />
+        <!--<activity
+            android:name=".PressureSensor"
+            android:exported="false" />-->
     </application>
 
 </manifest>

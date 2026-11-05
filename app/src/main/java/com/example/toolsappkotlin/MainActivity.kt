@@ -1,63 +1,74 @@
 package com.example.toolsappkotlin
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.toolsappkotlin.ui.theme.ToolsAppKotlinTheme
-import android.content.Intent
-import android.widget.Button
-import androidx.appcompat.app.AppCompatActivity
 
+import android.content.Intent
+import android.os.Bundle
+import android.widget.*
+import androidx.activity.ComponentActivity
+import androidx.lifecycle.lifecycleScope
+import com.example.toolsappkotlin.data.UserDatabase
+import kotlinx.coroutines.*
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        val username = findViewById<EditText>(R.id.editUsername)
+        val password = findViewById<EditText>(R.id.editPassword)
+        val login = findViewById<Button>(R.id.btnLogin)
+        val register = findViewById<Button>(R.id.btnCreateAccount)
+        val error = findViewById<TextView>(R.id.txtError)
+        val teacher = findViewById<RadioButton>(R.id.radioTeacher)
+        val student = findViewById<RadioButton>(R.id.radioStudent)
 
-        // 1. Find the button by its ID
-        val myButton = findViewById<Button>(R.id.btnOpenActivity)
-
-        // 2. Set the click listener
-        myButton.setOnClickListener {
-            // 3. Create an Intent pointing to your target Activity class
-            val intent = Intent(this, Accelerometer::class.java)
-
-            // 4. Start the new activity
-            startActivity(intent)
-        }
-        /* setContent {
-            ToolsAppKotlinTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-
+        fun submit(create: Boolean) {
+            val name = username.text.toString().trim()
+            val secret = password.text.toString().toCharArray()
+            val role = if (teacher.isChecked) "Teacher" else if (student.isChecked) "Student" else null
+            if (name.isBlank() || name.length > 64 || secret.isEmpty() || secret.size > 128 ||
+                (create && (secret.size < 8 ||
+                    secret.none { !it.isLetterOrDigit() && !it.isWhitespace() && !it.isISOControl() } ||
+                    role == null))) {
+                secret.fill('\u0000')
+                error.setText(R.string.account_validation)
+                return
+            }
+            login.isEnabled = false
+            register.isEnabled = false
+            error.setText(R.string.account_working)
+            lifecycleScope.launch {
+                try {
+                    val result = withContext(Dispatchers.IO) {
+                        val dao = UserDatabase.getInstance(applicationContext).users()
+                        if (create) {
+                            // Reject existing usernames before doing expensive password hashing.
+                            if (dao.find(name) != null) return@withContext null
+                            val user = PasswordHasher.create(name, secret, role!!)
+                            if (dao.insert(user) == -1L) null else user
+                        } else {
+                            dao.find(name)?.takeIf { PasswordHasher.verify(secret, it) }
+                        }
+                    }
+                    if (result == null) {
+                        error.setText(if (create) R.string.account_exists else R.string.account_invalid)
+                    } else {
+                        password.text.clear()
+                        error.text = ""
+                        startActivity(Intent(this@MainActivity, ActivitySelector::class.java)
+                            .putExtra("USER_ROLE", result.role)
+                            .putExtra("USERNAME", result.username))
+                    }
+                } catch (cancelled: CancellationException) {
+                    throw cancelled
+                } catch (_: Exception) {
+                    error.setText(R.string.account_failed)
+                } finally {
+                    secret.fill('\u0000')
+                    login.isEnabled = true
+                    register.isEnabled = true
                 }
             }
-        } */
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    ToolsAppKotlinTheme {
-        Greeting("Android")
+        }
+        login.setOnClickListener { submit(false) }
+        register.setOnClickListener { submit(true) }
     }
 }

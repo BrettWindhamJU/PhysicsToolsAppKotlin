@@ -6,9 +6,15 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-    <Button android:id="@+id/btnPauseResume"
+    <Button android:id="@+id/btnBackToSelector"
         android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:text="@string/resume_readings" />
+        android:text="@string/back_to_selector" />
+
+    <Button
+        android:id="@+id/btnSensorRecord"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/start_sensors_recording" />
     <TextView android:id="@+id/xValue"
         android:layout_width="match_parent" android:layout_height="wrap_content"
         android:text="@string/x_empty" android:textSize="20sp" />
@@ -18,9 +24,6 @@
     <TextView android:id="@+id/zValue"
         android:layout_width="match_parent" android:layout_height="wrap_content"
         android:text="@string/z_empty" android:textSize="20sp" />
-    <Button android:id="@+id/btnRecord"
-        android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:text="@string/start_recording" />
     <TextView android:id="@+id/recordingStatus"
         android:layout_width="match_parent" android:layout_height="wrap_content"
         android:accessibilityLiveRegion="polite" android:text="@string/recording_idle" />
@@ -30,7 +33,7 @@
     <Button android:id="@+id/btnBackRecordings"
         android:layout_width="match_parent" android:layout_height="wrap_content"
         android:text="@string/back_recordings" android:visibility="gone" />
-    <Button android:id="@+id/btnAnalyze"
+    <Button android:id="@+id/btnAnalyze" android:backgroundTint="@color/ju_gold" android:textColor="@color/ju_text"
         android:layout_width="match_parent" android:layout_height="wrap_content"
         android:text="@string/analyze_recording" android:visibility="gone" />
     <TextView android:id="@+id/historyHeading"
@@ -49,4 +52,11 @@
             android:layout_width="0dp" android:layout_height="wrap_content"
             android:layout_weight="1" android:text="@string/next_page" />
     </LinearLayout>
+    <com.example.toolsappkotlin.LiveAccelerometerGraph
+        android:id="@+id/accelerometerGraph"
+        android:layout_width="match_parent"
+        android:layout_height="280dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp" />
 </LinearLayout>
+

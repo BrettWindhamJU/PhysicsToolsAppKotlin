@@ -68,3 +68,32 @@ phone or emulator has its own database; recordings are not shared.
 Recording does not continue in the background. If the app is abruptly terminated,
 queued readings may be lost and the recording may appear as incomplete because
 no stop time was saved.
+
+## Magnetometer recordings
+
+The magnetometer screen uses the same Start/Stop, recording list, paging, and
+Analyze with Gemini workflow. It records magnetic X/Y/Z values in microtesla
+(µT), with every delivered reading saved. Recording stops when leaving the screen.
+Its separate Room database, magnetometer.db, contains magnetometer_recordings
+and magnetometer_readings, leaving existing accelerometer storage unchanged.
+Analysis sends the entire selected recording to Flash-Lite with magnetic-field
+instructions rather than acceleration/gravity instructions. Responses can be
+selected and copied and are not saved. A device without a magnetometer cannot
+start a new recording.
+
+## Local user accounts
+
+Use Create account on the login screen with a username, a password of 8–128
+characters including at least one special character (spaces do not count),
+and a Student or Teacher role. The old hardcoded demo logins have
+been removed. Login checks the saved account and uses its stored role rather
+than the radio selection. Usernames are case-sensitive and trimmed, and must
+be unique on this device.
+
+The separate users.db Room database stores a users table containing username,
+role, random 16-byte salt, 32-byte password hash, algorithm, and iteration count.
+Passwords are never stored in plaintext. PBKDF2-HMAC-SHA1 with 1,300,000 iterations
+supports Android API 24; verification uses a constant-time hash comparison.
+Hashing and database access run off the UI thread. These are local demo accounts,
+not Firebase Authentication accounts; self-selected Teacher roles are not verified
+and this does not add access restrictions to sensor recordings.
