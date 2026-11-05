@@ -46,4 +46,6 @@
     <string name="analysis_no_response">Gemini returned no text. Close this window and try again.</string>
     <string name="analysis_close">Close</string>
     <string name="analysis_note">AI-generated explanation; it may contain mistakes. This response is not saved.</string>
+    <string name="start_sensors_recording">Start Sensors &amp; Recording</string>
+    <string name="stop_sensors_recording">Stop Sensors &amp; Recording</string>
 </resources>
