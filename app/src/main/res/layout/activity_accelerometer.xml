@@ -15,6 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/start_sensors_recording" />
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:background="@drawable/workspace_card">
     <TextView android:id="@+id/xValue"
         android:layout_width="match_parent" android:layout_height="wrap_content"
         android:text="@string/x_empty" android:textSize="20sp" />
@@ -27,6 +28,7 @@
     <TextView android:id="@+id/recordingStatus"
         android:layout_width="match_parent" android:layout_height="wrap_content"
         android:accessibilityLiveRegion="polite" android:text="@string/recording_idle" />
+    </LinearLayout>
     <Button android:id="@+id/btnViewData"
         android:layout_width="match_parent" android:layout_height="wrap_content"
         android:text="@string/view_saved_readings" />
@@ -41,7 +43,7 @@
         android:text="@string/recordings_heading" android:textStyle="bold" />
     <ListView android:id="@+id/recordingsList"
         android:layout_width="match_parent" android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="1" android:background="@drawable/workspace_card" />
     <LinearLayout android:id="@+id/pageControls"
         android:layout_width="match_parent" android:layout_height="wrap_content"
         android:orientation="horizontal" android:visibility="gone">
@@ -55,8 +57,9 @@
     <com.example.toolsappkotlin.LiveAccelerometerGraph
         android:id="@+id/accelerometerGraph"
         android:layout_width="match_parent"
-        android:layout_height="280dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp" />
+        android:layout_height="120dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp" />
 </LinearLayout>
+
 

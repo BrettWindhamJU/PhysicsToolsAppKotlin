@@ -97,3 +97,38 @@ supports Android API 24; verification uses a constant-time hash comparison.
 Hashing and database access run off the UI thread. These are local demo accounts,
 not Firebase Authentication accounts; self-selected Teacher roles are not verified
 and this does not add access restrictions to sensor recordings.
+
+## Additional sensors
+
+Accelerometer Without Gravity uses Android TYPE_LINEAR_ACCELERATION and stores
+X/Y/Z in m/s². Pressure uses TYPE_PRESSURE and stores a single pressure value in
+hPa. Both screens retain the same recording, graph, paging, back-button, and AI
+analysis workflow. Their separate linearacceleration.db and pressure.db Room
+files preserve existing databases. AI receives every reading and sensor-specific
+units/instructions. Unavailable hardware disables Start while saved history
+remains accessible. Pressure displays one value and one graph trace.
+
+## Local classroom labs
+
+After signing in, teachers and students have separate home pages. All accounts,
+assignments, and results are stored on this Android device; there is no cross-device sync.
+
+Create student accounts first. Sign in as a teacher, choose Create a lab, enter its
+title and instructions, select the allowed sensors, and select students. Students
+see only their assigned labs. Opening a lab provides its selected sensors and a
+results field. Save a draft while working, then Submit results when finished.
+
+Each new recording is linked to the current student and lab. Teachers can review
+submitted findings and open the accompanying recordings, including the existing AI
+analysis feature. Submitted work cannot be edited or recorded over. AI responses
+are not automatically included in the written submission; copy relevant findings
+into the results field before submitting.
+
+Teachers also have a practice sensor workspace. Older recordings without a lab
+or account link remain available there. Students cannot browse those recordings.
+
+The separate Room database labs.db contains labs, student assignments/results,
+and recording ownership links. Existing user and sensor databases are retained.
+Logging out switches accounts; restarting the app process requires signing in.
+AI analysis still requires internet and Firebase configuration; other lab features
+work locally.

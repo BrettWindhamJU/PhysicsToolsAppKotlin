@@ -20,6 +20,8 @@ interface UserDao {
 
     @Query("SELECT * FROM users WHERE username = :username LIMIT 1")
     fun find(username: String): User?
+    @Query("SELECT username FROM users WHERE role = 'Student' ORDER BY username")
+    fun students(): List<String>
 }
 
 @Database(entities = [User::class], version = 1, exportSchema = false)
@@ -33,3 +35,4 @@ abstract class UserDatabase : RoomDatabase() {
         }
     }
 }
+
