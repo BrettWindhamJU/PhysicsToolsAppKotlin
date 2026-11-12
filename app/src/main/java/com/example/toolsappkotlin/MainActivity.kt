@@ -53,9 +53,11 @@ class MainActivity : ComponentActivity() {
                     } else {
                         password.text.clear()
                         error.text = ""
-                        startActivity(Intent(this@MainActivity, ActivitySelector::class.java)
+                        LabSession.login(result)
+                        startActivity(Intent(this@MainActivity, HomeActivity::class.java)
                             .putExtra("USER_ROLE", result.role)
                             .putExtra("USERNAME", result.username))
+                        finish()
                     }
                 } catch (cancelled: CancellationException) {
                     throw cancelled
@@ -72,3 +74,4 @@ class MainActivity : ComponentActivity() {
         register.setOnClickListener { submit(true) }
     }
 }
+

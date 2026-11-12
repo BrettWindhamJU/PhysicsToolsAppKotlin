@@ -18,7 +18,7 @@
             android:id="@+id/txtWelcome"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Welcome!"
+            android:text="Physics Labs"
             android:textSize="32sp"
             android:textStyle="bold"
             android:textColor="@color/ju_text"
@@ -27,7 +27,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Please log in to continue"
+            android:text="Your classroom. Your experiments. Your discoveries."
             android:textSize="16sp"
             android:textColor="@color/ju_secondary_text"
             android:layout_marginBottom="30dp"/>
@@ -37,7 +37,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Select Account Type"
+            android:text="Account type for registration"
             android:textSize="18sp"
             android:textStyle="bold"
             android:textColor="@color/ju_text"
@@ -152,5 +152,6 @@
     </LinearLayout>
 
 </ScrollView>
+
 
 

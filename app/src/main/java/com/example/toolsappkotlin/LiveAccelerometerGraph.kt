@@ -23,6 +23,7 @@ class LiveAccelerometerGraph @JvmOverloads constructor(
         val z: Float
     )
 
+    var pressureMode = false
     private val readings = mutableListOf<Reading>()
 
     private val timeWindow = 10_000_000_000L // 10 seconds
@@ -229,28 +230,28 @@ class LiveAccelerometerGraph @JvmOverloads constructor(
             }
 
             drawAxis({ it.x }, xPaint)
-            drawAxis({ it.y }, yPaint)
-            drawAxis({ it.z }, zPaint)
+            if (!pressureMode) drawAxis({ it.y }, yPaint)
+            if (!pressureMode) drawAxis({ it.z }, zPaint)
 
             // Current sensor values
             val latest = readings.last()
 
             canvas.drawText(
-                "X: %.2f".format(latest.x),
+                (if (pressureMode) "hPa: %.2f" else "X: %.2f").format(latest.x),
                 graphLeft,
                 height - 5f,
                 xPaint
             )
 
             canvas.drawText(
-                "Y: %.2f".format(latest.y),
+                if (pressureMode) "" else "Y: %.2f".format(latest.y),
                 graphLeft + 180f,
                 height - 5f,
                 yPaint
             )
 
             canvas.drawText(
-                "Z: %.2f".format(latest.z),
+                if (pressureMode) "" else "Z: %.2f".format(latest.z),
                 graphLeft + 360f,
                 height - 5f,
                 zPaint
@@ -258,4 +259,5 @@ class LiveAccelerometerGraph @JvmOverloads constructor(
         }
     }
 }
+
 

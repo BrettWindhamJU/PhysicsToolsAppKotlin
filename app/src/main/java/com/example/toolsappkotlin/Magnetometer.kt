@@ -38,6 +38,8 @@ import java.util.UUID
 import java.util.concurrent.Executors
 
 class Magnetometer : ComponentActivity(), SensorEventListener {
+    private lateinit var labScope: SensorScope
+    private val labSensor = 4
     private lateinit var sensorManager: SensorManager
     private var accelerometer: Sensor? = null
     private var isTracking = false
@@ -63,6 +65,7 @@ class Magnetometer : ComponentActivity(), SensorEventListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        labScope = LabSensors.admit(this, labSensor) ?: return
         enableEdgeToEdge()
         setContentView(R.layout.activity_accelerometer)
         findViewById<Button>(R.id.btnBackToSelector).setOnClickListener { finish() }
@@ -89,7 +92,9 @@ class Magnetometer : ComponentActivity(), SensorEventListener {
 
         accelerometerGraph = findViewById(R.id.accelerometerGraph)
 
+        sensorRecordButton.isEnabled = !labScope.readOnly
         sensorRecordButton.setOnClickListener {
+            if (labScope.readOnly) return@setOnClickListener
             if (isTracking) {
                 stopTracking()
             } else {
@@ -129,7 +134,16 @@ class Magnetometer : ComponentActivity(), SensorEventListener {
         val recording = MagnetometerRecording(UUID.randomUUID().toString(), System.currentTimeMillis())
         activeRecording = recording.id
         status.setText(R.string.recording)
-        save(recording.id) { dao.insertRecording(recording) }
+        save(recording.id) {
+            val labs = com.example.toolsappkotlin.data.LabDatabase.getInstance(this).labs()
+            val labId = labScope.labId
+            if (labId != null) {
+                val assignment = labs.assignment(labId, labScope.owner)
+                check(assignment != null && assignment.submittedAt == null && labScope.owner == LabSession.username)
+            }
+            dao.insertRecording(recording)
+            labs.link(com.example.toolsappkotlin.data.LabRecording(recording.id, labScope.owner, labScope.labId, labSensor))
+        }
     }
 
     private fun stopRecording() {
@@ -164,7 +178,7 @@ class Magnetometer : ComponentActivity(), SensorEventListener {
     }
 
     override fun onPause() {
-        stopTracking()
+        if (::sensorManager.isInitialized) stopTracking()
         super.onPause()
     }
 
@@ -232,7 +246,12 @@ class Magnetometer : ComponentActivity(), SensorEventListener {
         val request = prepareHistory()
         databaseWorker.execute {
             try {
-                val recordings = dao.recordings()
+                val permitted = com.example.toolsappkotlin.data.LabDatabase.getInstance(this).labs()
+                    .recordingIds(labScope.owner, labScope.labId, labSensor).toSet()
+                val linked = com.example.toolsappkotlin.data.LabDatabase.getInstance(this).labs().linkedRecordingIds().toSet()
+                // Earlier recordings had no owner; keep them in teacher practice only.
+                val legacy = labScope.labId == null && LabSession.role == "Teacher"
+                val recordings = dao.recordings().filter { it.id in permitted || (legacy && it.id !in linked) }
                 runOnUiThread {
                     if (!isDestroyed && request == historyRequest) {
                         heading.setText(if (recordings.isEmpty()) R.string.no_recordings else R.string.recordings_heading)
@@ -339,6 +358,9 @@ class Magnetometer : ComponentActivity(), SensorEventListener {
         }
     }
 }
+
+
+
 
 
 

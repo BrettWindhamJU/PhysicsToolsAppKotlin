@@ -26,6 +26,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".HomeActivity" android:exported="false" />
         <activity
             android:name=".ActivitySelector"
             android:exported="false" />
@@ -33,15 +34,17 @@
             android:name=".Accelerometer"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
-        <!--<activity
+        <activity
             android:name=".AccelerometerWithoutGravity"
-            android:exported="false" />-->
+            android:exported="false" />
         <activity
             android:name=".Magnetometer"
             android:exported="false" />
-        <!--<activity
+        <activity
             android:name=".PressureSensor"
-            android:exported="false" />-->
+            android:exported="false" />
     </application>
 
 </manifest>
+
+
